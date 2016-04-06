@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by GiusWhite on 01/02/2016.
  */
-public class CsvFileWriter {
+public class CsvHelper {
 
     public static void writeHashMapToCsv(String header, Map<Object, Object> map, String filename) {
         StringWriter output = new StringWriter();

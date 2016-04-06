@@ -44,36 +44,36 @@ public class SimianLog {
                 '}';
     }
 
-    public static List<SimianStackoverflowFragment> getSimianLogStats(List<SimianLog> simianLogs){
+    public static List<SimianStackoverflowFragment> getSimianLogStats(List<SimianLog> simianLogs) {
         List<SimianStackoverflowFragment> result = new ArrayList<>();
-        for(SimianLog s : simianLogs){
-            for(LogFragment lF : s.fragmentList){
+        for (SimianLog s : simianLogs) {
+            for (LogFragment lF : s.fragmentList) {
                 /*Controllo se esiste nella lista risultato.*/
-                if(lF.isStackoverflowFragment){
+                if (lF.isStackoverflowFragment) {
                     boolean exist = false;
                     SimianStackoverflowFragment simianStackoverflowFragment = new SimianStackoverflowFragment();
-                    for (SimianStackoverflowFragment sSF : result){
-                        if(sSF.fragmentName.equals(lF.filePath)){
+                    for (SimianStackoverflowFragment sSF : result) {
+                        if (sSF.fragmentName.equals(lF.filePath)) {
                             exist = true;
                             simianStackoverflowFragment = sSF;
                             break;
                         }
                     }
                     /* Se non esiste, lo creo e lo aggiungo*/
-                    if(!exist){
+                    if (!exist) {
                         simianStackoverflowFragment.fragmentName = lF.filePath;
                         result.add(simianStackoverflowFragment);
                     }
-                    for(LogFragment lF2: s.fragmentList){
-                        if(!lF2.isStackoverflowFragment){
+                    for (LogFragment lF2 : s.fragmentList) {
+                        if (!lF2.isStackoverflowFragment) {
                             simianStackoverflowFragment.numberOfTimeIsUsed++;
                             exist = false;
-                            for (String projectName: simianStackoverflowFragment.projectsWhereIsUsed){
-                                if(projectName.equals(lF2.filePath)){
+                            for (String projectName : simianStackoverflowFragment.projectsWhereIsUsed) {
+                                if (projectName.equals(lF2.filePath)) {
                                     exist = true;
                                 }
                             }
-                            if(!exist){
+                            if (!exist) {
                                 simianStackoverflowFragment.projectsWhereIsUsed.add(lF2.filePath);
                             }
                         }
@@ -85,34 +85,56 @@ public class SimianLog {
         return result;
     }
 
-    public static List<SimianStackoverflowFragment> sortByUsage(List<SimianStackoverflowFragment> list){
+    public static int getSimianLogPairNumber(List<SimianLog> simianLogs) {
+        int result = 0;
+        for (SimianLog simianLog : simianLogs) {
+            int simianFragment = simianLog.fragmentList.size();
+            if (simianFragment != 0) {
+                    result = result + ((simianFragment*simianFragment-1)/2);
+            }
+        }
+        return result;
+    }
+
+    private static int fatt(int x) {
+        int i;
+        int f = 1;
+
+        for (i = 1; i <= x; i = i + 1) {
+            f = f * i;
+        }
+
+        return f;
+    }
+
+    public static List<SimianStackoverflowFragment> sortByUsage(List<SimianStackoverflowFragment> list) {
         List<SimianStackoverflowFragment> result = list;
         Collections.sort(result, new SimianLogComparator(SimianLogComparator.USAGE));
         return result;
     }
 
-    public static List<SimianStackoverflowFragment> sortByProjects(List<SimianStackoverflowFragment> list){
+    public static List<SimianStackoverflowFragment> sortByProjects(List<SimianStackoverflowFragment> list) {
         List<SimianStackoverflowFragment> result = list;
         Collections.sort(result, new SimianLogComparator(SimianLogComparator.PROJECTS));
         return result;
     }
 
-    public static Map<Object, Object> getDistributionBy(List<SimianStackoverflowFragment> list, int by){
-        Map<Object,Object> result = new HashMap<>();
-        for (SimianStackoverflowFragment s: list) {
-            if(by == SimianLogComparator.PROJECTS){
+    public static Map<Object, Object> getDistributionBy(List<SimianStackoverflowFragment> list, int by) {
+        Map<Object, Object> result = new HashMap<>();
+        for (SimianStackoverflowFragment s : list) {
+            if (by == SimianLogComparator.PROJECTS) {
                 int projectsNumber = s.projectsWhereIsUsed.size();
-                if(result.containsKey(projectsNumber)){
+                if (result.containsKey(projectsNumber)) {
                     int current = (int) result.get(projectsNumber);
-                    result.put(projectsNumber, current+1);
+                    result.put(projectsNumber, current + 1);
                 } else {
                     result.put(projectsNumber, 1);
                 }
             } else {
                 int projectsNumber = s.numberOfTimeIsUsed;
-                if(result.containsKey(projectsNumber)){
+                if (result.containsKey(projectsNumber)) {
                     int current = (int) result.get(projectsNumber);
-                    result.put(projectsNumber, current+1);
+                    result.put(projectsNumber, current + 1);
                 } else {
                     result.put(projectsNumber, 1);
                 }
@@ -122,32 +144,32 @@ public class SimianLog {
         return result;
     }
 
-    public static Map<Object, Object> getSimianLogLOCStats(List<SimianLog> simianLogs){
+    public static Map<Object, Object> getSimianLogLOCStats(List<SimianLog> simianLogs) {
         Map<Object, Object> result = new HashMap<>();
-        for(SimianLog s : simianLogs){
-            for(LogFragment lF : s.fragmentList){
-               if(lF.isStackoverflowFragment){
-                   if(result.containsKey(lF.getNumberOfUsedLOC())){
-                       int current = (int) result.get(lF.getNumberOfUsedLOC());
-                       result.put(lF.getNumberOfUsedLOC(), current+1);
-                   } else {
-                       result.put(lF.getNumberOfUsedLOC(), 1);
-                   }
-               }
+        for (SimianLog s : simianLogs) {
+            for (LogFragment lF : s.fragmentList) {
+                if (lF.isStackoverflowFragment) {
+                    if (result.containsKey(lF.getNumberOfUsedLOC())) {
+                        int current = (int) result.get(lF.getNumberOfUsedLOC());
+                        result.put(lF.getNumberOfUsedLOC(), current + 1);
+                    } else {
+                        result.put(lF.getNumberOfUsedLOC(), 1);
+                    }
+                }
             }
 
         }
         return result;
     }
 
-    public static Map<Object, Object> getSimianLogProjectsStats(List<SimianLog> simianLogs){
+    public static Map<Object, Object> getSimianLogProjectsStats(List<SimianLog> simianLogs) {
         Map<Object, Object> result = new HashMap<>();
-        for(SimianLog s : simianLogs){
-            for(LogFragment lF : s.fragmentList){
-                if(!lF.isStackoverflowFragment){
-                    if(result.containsKey(lF.filePath)){
+        for (SimianLog s : simianLogs) {
+            for (LogFragment lF : s.fragmentList) {
+                if (!lF.isStackoverflowFragment) {
+                    if (result.containsKey(lF.filePath)) {
                         int current = (int) result.get(lF.filePath);
-                        result.put(lF.filePath, current+1);
+                        result.put(lF.filePath, current + 1);
                     } else {
                         result.put(lF.filePath, 1);
                     }
@@ -191,9 +213,10 @@ public class SimianLog {
             this.end = end;
         }
 
-        public int getNumberOfUsedLOC(){
-            return this.end-this.start+1;
+        public int getNumberOfUsedLOC() {
+            return this.end - this.start + 1;
         }
+
         @Override
         public String toString() {
             return "LogFragment{" +

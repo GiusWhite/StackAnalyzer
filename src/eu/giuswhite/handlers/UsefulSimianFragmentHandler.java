@@ -50,7 +50,7 @@ public class UsefulSimianFragmentHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (CommonUtils.TEST_MODE) {
-            if (ParserManager.NUMBER_OF_POSTS >= CommonUtils.STOP_PROCESS_FLAG) {
+            if (StackoverflowParserHandler.NUMBER_OF_POSTS >= CommonUtils.STOP_PROCESS_FLAG) {
                 throw new SaxTerminatorException();
             }
         }

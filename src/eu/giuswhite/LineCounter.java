@@ -1,5 +1,6 @@
 package eu.giuswhite;
 
+import eu.giuswhite.handlers.StackoverflowParserHandler;
 import eu.giuswhite.utils.CommonUtils;
 
 import java.io.*;
@@ -56,7 +57,7 @@ public class LineCounter {
         for (String file : allFilesInFolder) {
             try {
                 int numberOfLines = this.countLines(file);
-                ParserManager.TOTAL_LINE_NUMBER = ParserManager.TOTAL_LINE_NUMBER + numberOfLines;
+                StackoverflowParserHandler.TOTAL_LINE_NUMBER = StackoverflowParserHandler.TOTAL_LINE_NUMBER + numberOfLines;
                 this.manageTopFile(file, numberOfLines);
                 if (lineStatMap.containsKey(numberOfLines)) {
                     lineStatMap.put(numberOfLines, lineStatMap.get(numberOfLines) + 1);
