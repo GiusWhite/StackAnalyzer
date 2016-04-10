@@ -46,34 +46,18 @@ public class CsvHelper {
         return new TreeMap<>(unsortedMap);
     }
 
-    public static <K, V extends Comparable<? super V>> Map<K, V>
-    sortByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list =
-                new LinkedList<Map.Entry<K, V>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
-
-        Map<K, V> result = new LinkedHashMap<K, V>();
-        for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
-    }
-
     public static void writeSimianLogsStatsOnCsv(List<SimianStackoverflowFragment> list, String filename) {
         StringWriter output = new StringWriter();
+        SimianStackoverflowFragment.orderFragmentsByPercentageOfReusedLoc(list, true);
         try (ICsvListWriter listWriter = new CsvListWriter(output,
                 CsvPreference.STANDARD_PREFERENCE)) {
             for (SimianStackoverflowFragment fragment : list) {
-                listWriter.write(fragment.fragmentName, fragment.numberOfTimeIsUsed, fragment.projectsWhereIsUsed.size());
+                listWriter.write(fragment.fragmentName, fragment.numberOfTimeIsUsed, fragment.projectsWhereIsUsed.size(), fragment.totalLOC, fragment.reusedLines.size(), fragment.percentageOfReusedLoc);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String result = "Fragment Name, Used, In Projects\n" + output.toString();
+        String result = "Fragment Name, Used, In how many projects?, Total LOC, Reused Lines, %\n" + output.toString();
         FileManager.getInstance().createAndWriteFile(CommonUtils.PROJECT_FOLDER_PATH, filename + ".csv", result, false);
     }
 }

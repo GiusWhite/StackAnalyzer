@@ -55,32 +55,6 @@ public class UsefulSimianFragmentHandler extends DefaultHandler {
             }
         }
     }
-    /*
-    private void getFragmentStats(String qName, Attributes attributes) {
-        SimianStackoverflowFragment actualFragment = new SimianStackoverflowFragment();
-        if (qName.equals("FRAGMENT_LOG")) {
-            String filePath = attributes.getValue("filePath");
-            if (filePath.contains("extracted_data_full")) {
-                String[] parts = filePath.split("/");
-                String fragmentName = parts[parts.length - 1];
-                boolean exixt = false;
-                for (SimianStackoverflowFragment fragment : this.stackoverflowFragments) {
-                    if (fragment.fragmentName.equals(fragmentName)) {
-                        exixt = true;
-                        actualFragment = fragment;
-                        break;
-                    }
-                }
-                if (!exixt) {
-                    actualFragment.fragmentName = fragmentName;
-                    actualFragment.numberOfTimeIsUsed++;
-                    this.stackoverflowFragments.add(actualFragment);
-                }
-                actualFragment.numberOfTimeIsUsed++;
-            }
-        }
-    }
-    */
 
     private void createSimianLog(String qName, Attributes attributes) {
         if (qName.equals("SIMIAN_LOG")) {

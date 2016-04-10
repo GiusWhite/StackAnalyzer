@@ -1,7 +1,10 @@
 package eu.giuswhite.beans;
 
+import eu.giuswhite.LineCounter;
 import eu.giuswhite.comparators.SimianLogComparator;
+import eu.giuswhite.utils.CommonUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -64,6 +67,14 @@ public class SimianLog {
                         simianStackoverflowFragment.fragmentName = lF.filePath;
                         result.add(simianStackoverflowFragment);
                     }
+
+                    /* Creo lista delle linee riutilizzate */
+                    for (int i = lF.start; i <= lF.end; i++) {
+                        if (!simianStackoverflowFragment.reusedLines.contains(i)) {
+                            simianStackoverflowFragment.reusedLines.add(i);
+                        }
+                    }
+
                     for (LogFragment lF2 : s.fragmentList) {
                         if (!lF2.isStackoverflowFragment) {
                             simianStackoverflowFragment.numberOfTimeIsUsed++;
@@ -80,9 +91,21 @@ public class SimianLog {
                     }
                 }
             }
-
         }
+
+        this.addTotalLocToStackoverflowFragment(result, "");
         return result;
+    }
+
+    private void addTotalLocToStackoverflowFragment(List<SimianStackoverflowFragment> list, String stackoverflowFragmentFolderPath) {
+        for (SimianStackoverflowFragment fragment : list) {
+            try {
+                fragment.totalLOC = LineCounter.getInstance().countLines(stackoverflowFragmentFolderPath + fragment.fragmentName);
+                fragment.percentageOfReusedLoc = ((fragment.reusedLines.size() * 100) / fragment.totalLOC);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static int getSimianLogPairNumber(List<SimianLog> simianLogs) {
@@ -90,21 +113,10 @@ public class SimianLog {
         for (SimianLog simianLog : simianLogs) {
             int simianFragment = simianLog.fragmentList.size();
             if (simianFragment != 0) {
-                    result = result + ((simianFragment*simianFragment-1)/2);
+                result = result + ((simianFragment * simianFragment - 1) / 2);
             }
         }
         return result;
-    }
-
-    private static int fatt(int x) {
-        int i;
-        int f = 1;
-
-        for (i = 1; i <= x; i = i + 1) {
-            f = f * i;
-        }
-
-        return f;
     }
 
     public static List<SimianStackoverflowFragment> sortByUsage(List<SimianStackoverflowFragment> list) {

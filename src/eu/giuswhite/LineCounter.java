@@ -72,7 +72,7 @@ public class LineCounter {
         return lineStatMap;
     }
 
-    private void getDirectoryContents(File dir, List<String> filesName) {
+    public void getDirectoryContents(File dir, List<String> filesName) {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
