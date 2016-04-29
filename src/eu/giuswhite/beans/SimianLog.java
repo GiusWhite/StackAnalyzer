@@ -93,11 +93,11 @@ public class SimianLog {
             }
         }
 
-        this.addTotalLocToStackoverflowFragment(result, "");
+        SimianLog.addTotalLocToStackoverflowFragment(result, "");
         return result;
     }
 
-    private void addTotalLocToStackoverflowFragment(List<SimianStackoverflowFragment> list, String stackoverflowFragmentFolderPath) {
+    private static void addTotalLocToStackoverflowFragment(List<SimianStackoverflowFragment> list, String stackoverflowFragmentFolderPath) {
         for (SimianStackoverflowFragment fragment : list) {
             try {
                 fragment.totalLOC = LineCounter.getInstance().countLines(stackoverflowFragmentFolderPath + fragment.fragmentName);
