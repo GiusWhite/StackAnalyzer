@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class Main {
 
+    private static String toolFunction;
+    private static String language;
     private static String stackoverflowDumpFilePath;
 
     public static void main(String[] args) {
@@ -14,13 +16,29 @@ public class Main {
         //Parsing arguments
         Main.processCommandLine(args);
 
-        ParserManager.getInstance().stackoverflowParser(Main.stackoverflowDumpFilePath);
-        Map map = CsvHelper.sortHashMapByKey(LineCounter.getInstance().getMapOfLinesStat("./"));
-        Map smallest = LineCounter.getInstance().getTopSmallestFile();
-        Map biggest = LineCounter.getInstance().getTopBiggestFile();
-        CsvHelper.writeHashMapToCsv("# of lines, # of posts", map, "stackoverflow_posts_loc_statistics");
-        CsvHelper.writeHashMapToCsv("Post ID, # of lines", smallest, "5_smallest_code");
-        CsvHelper.writeHashMapToCsv("Post ID, # of lines", biggest, "5_biggest_code");
+        if (toolFunction != null) {
+            switch (toolFunction) {
+                case "parser":
+                    if (stackoverflowDumpFilePath != null) {
+                        ParserManager.getInstance().stackoverflowParser(Main.stackoverflowDumpFilePath);
+                        Map map = CsvHelper.sortHashMapByKey(LineCounter.getInstance().getMapOfLinesStat("./"));
+                        Map smallest = LineCounter.getInstance().getTopSmallestFile();
+                        Map biggest = LineCounter.getInstance().getTopBiggestFile();
+                        CsvHelper.writeHashMapToCsv("# of lines, # of posts", map, "stackoverflow_posts_loc_statistics");
+                        CsvHelper.writeHashMapToCsv("Post ID, # of lines", smallest, "5_smallest_code");
+                        CsvHelper.writeHashMapToCsv("Post ID, # of lines", biggest, "5_biggest_code");
+                    } else {
+                        System.out.println("Invalid path to Stackoverflow dump");
+                    }
+                    break;
+                case "help":
+                    Main.printShortDocumentation();
+                    break;
+            }
+        } else {
+            System.out.println("No tool function provided. Try with help for more info.");
+        }
+
 
         //ParserManager.getInstance().simianLogsFilterParser();
         //ParserManager.getInstance().usefulSimianFragmentStatisticParser();
@@ -34,18 +52,26 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
 
         // add t option
+        options.addOption("f", "toolFunction", true, "Function of the tool");
         options.addOption("i", "input", true, "Path to Stackoverflow dump");
         options.addOption("s", "system", true, "Directory for output files");
-        options.addOption("h", "help", false, "Display help message.");
 
         try {
             CommandLine cmd = parser.parse(options, args);
 
-            if (cmd.hasOption("i")) {
-                Main.stackoverflowDumpFilePath = cmd.getOptionValue("i");
+            if (cmd.hasOption("f")) {
+                Main.toolFunction = cmd.getOptionValue("f");
+
+                if (cmd.hasOption("i")) {
+                    Main.stackoverflowDumpFilePath = cmd.getOptionValue("i");
+                } else {
+                    throw new ParseException("No Stackoverflow dump path provided");
+                }
+
             } else {
-                throw new ParseException("No Stackoverflow dump path provided");
+                throw new ParseException("No tool function provided");
             }
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -55,8 +81,5 @@ public class Main {
 
     private static void printShortDocumentation() {
         System.out.println("STACKOVERFLOW DUMP ANALYZER");
-        System.out.println("1st argument: tool mode");
-        System.out.println("-stack: to retrieve code fragment from answers in stackoverflow dump posts file");
-        System.out.println("2nd argument for -stack mode: stackoverflow posts dump file");
     }
 }
