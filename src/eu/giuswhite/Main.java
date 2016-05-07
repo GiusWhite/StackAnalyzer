@@ -12,7 +12,6 @@ public class Main {
     private static String stackoverflowDumpFilePath;
 
     public static void main(String[] args) {
-
         //Parsing arguments
         Main.processCommandLine(args);
 
