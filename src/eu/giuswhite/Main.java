@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         //Parsing arguments
-        Main.processCommandLine(args);
+       Main.processCommandLine(args);
 
         if (toolFunction != null) {
             switch (toolFunction) {
@@ -38,7 +38,6 @@ public class Main {
             System.out.println("No tool function provided. Try with help for more info.");
         }
 
-
         //ParserManager.getInstance().simianLogsFilterParser();
         //ParserManager.getInstance().usefulSimianFragmentStatisticParser();
     }
@@ -51,28 +50,26 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
 
         // add t option
-        options.addOption("f", "toolFunction", true, "Function of the tool");
-        options.addOption("i", "input", true, "Path to Stackoverflow dump");
-        options.addOption("s", "system", true, "Directory for output files");
+        options.addOption("stackparser", true, "Function of the tool");
+//        options.addOption("f", "toolFunction", true, "Function of the tool");
+//        options.addOption("i", "input", true, "Path to Stackoverflow dump");
+//        options.addOption("s", "system", true, "Directory for output files");
 
+        CommandLine cmd = null;
+        System.out.println("Prima del try");
         try {
-            CommandLine cmd = parser.parse(options, args);
-
-            if (cmd.hasOption("f")) {
-                Main.toolFunction = cmd.getOptionValue("f");
-
-                if (cmd.hasOption("i")) {
-                    Main.stackoverflowDumpFilePath = cmd.getOptionValue("i");
-                } else {
-                    throw new ParseException("No Stackoverflow dump path provided");
-                }
-
-            } else {
-                throw new ParseException("No tool function provided");
-            }
-
+            cmd = parser.parse(options, args);
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+
+        if (cmd.hasOption("stackparser")) {
+            if (cmd.getOptionValue("stackparser") != null) {
+                Main.stackoverflowDumpFilePath = cmd.getOptionValue("stackparser");
+                System.out.println(Main.stackoverflowDumpFilePath);
+            }
+        } else {
+            System.out.println("I'm Here");
         }
 
     }

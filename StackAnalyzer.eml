@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/out/test/StackAnalyzer"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<levels>
+		<level name="super-csv-2.4.0" value="project"/>
+		<level name="commons-io-2.4" value="project"/>
+		<level name="jdom-2.0.6" value="project"/>
+		<level name="commons-cli-1.3.1" value="project"/>
+	</levels>
+</component>
